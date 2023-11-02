@@ -1,0 +1,166 @@
+ 
+Welcome to Program 5 - Working with Graph Algorithms.
+Please enter the name of a text file to retrieve your graph from: graph1.txt
+
+   1) Read in a new graph
+   2) Print out the graph
+   3) Topological Sort
+   4) Shortest Path (from a node of your choice to all other nodes)
+   5) Minimum Spanning Tree
+   6) Exit the program
+
+Please enter your choice: 2
+5
+MCO
+LGA
+PVD
+LAX
+SFO
+12
+MCO LGA 1099
+MCO PVD 1355
+MCO LAX 2360
+LGA MCO 1099
+LGA SFO 2224
+PVD MCO 1355
+PVD LAX 2400
+LAX MCO 2360
+LAX PVD 2400
+LAX SFO 400
+SFO LGA 2224
+SFO LAX 400
+
+   1) Read in a new graph
+   2) Print out the graph
+   3) Topological Sort
+   4) Shortest Path (from a node of your choice to all other nodes)
+   5) Minimum Spanning Tree
+   6) Exit the program
+
+Please enter your choice: 3
+This graph cannot be topologically sorted.
+
+   1) Read in a new graph
+   2) Print out the graph
+   3) Topological Sort
+   4) Shortest Path (from a node of your choice to all other nodes)
+   5) Minimum Spanning Tree
+   6) Exit the program
+
+Please enter your choice: 4
+Please type the name of a node to get shortest paths for: LAX
+Shortest paths from LAX:
+LAX --> MCO || Weight: 2360
+LAX --> SFO --> LGA || Weight: 2624
+LAX --> PVD || Weight: 2400
+LAX --> SFO || Weight: 400
+
+   1) Read in a new graph
+   2) Print out the graph
+   3) Topological Sort
+   4) Shortest Path (from a node of your choice to all other nodes)
+   5) Minimum Spanning Tree
+   6) Exit the program
+
+Please enter your choice: 5
+Minimum Spanning Tree:
+LAX -- SFO || Weight: 400
+MCO -- LGA || Weight: 1099
+MCO -- PVD || Weight: 1355
+LGA -- SFO || Weight: 2224
+Total Cost: 5078
+
+   1) Read in a new graph
+   2) Print out the graph
+   3) Topological Sort
+   4) Shortest Path (from a node of your choice to all other nodes)
+   5) Minimum Spanning Tree
+   6) Exit the program
+
+Please enter your choice: 1
+Please enter the name of a text file to retrieve your graph from: graph2.txt
+
+   1) Read in a new graph
+   2) Print out the graph
+   3) Topological Sort
+   4) Shortest Path (from a node of your choice to all other nodes)
+   5) Minimum Spanning Tree
+   6) Exit the program
+
+Please enter your choice: 2
+8
+A
+B
+C
+D
+E
+F
+G
+H
+10
+A B 8
+A D 2
+A G 8
+B F 9
+C D 3
+C E 6
+D B 2
+E G 3
+E H 2
+F H 8
+
+   1) Read in a new graph
+   2) Print out the graph
+   3) Topological Sort
+   4) Shortest Path (from a node of your choice to all other nodes)
+   5) Minimum Spanning Tree
+   6) Exit the program
+
+Please enter your choice: 3
+Topological Sort:
+A --> C --> D --> E --> B --> G --> F --> H
+
+   1) Read in a new graph
+   2) Print out the graph
+   3) Topological Sort
+   4) Shortest Path (from a node of your choice to all other nodes)
+   5) Minimum Spanning Tree
+   6) Exit the program
+
+Please enter your choice: 4
+Please type the name of a node to get shortest paths for: C
+Shortest paths from C:
+No path from C to A found.
+C --> D --> B || Weight: 5
+C --> D || Weight: 3
+C --> E || Weight: 6
+C --> D --> B --> F || Weight: 14
+C --> E --> G || Weight: 9
+C --> E --> H || Weight: 8
+
+   1) Read in a new graph
+   2) Print out the graph
+   3) Topological Sort
+   4) Shortest Path (from a node of your choice to all other nodes)
+   5) Minimum Spanning Tree
+   6) Exit the program
+
+Please enter your choice: 5
+Minimum Spanning Tree:
+A -- D || Weight: 2
+D -- B || Weight: 2
+E -- H || Weight: 2
+C -- D || Weight: 3
+E -- G || Weight: 3
+C -- E || Weight: 6
+F -- H || Weight: 8
+Total Cost: 26
+
+   1) Read in a new graph
+   2) Print out the graph
+   3) Topological Sort
+   4) Shortest Path (from a node of your choice to all other nodes)
+   5) Minimum Spanning Tree
+   6) Exit the program
+
+Please enter your choice: 6
