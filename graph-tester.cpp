@@ -43,33 +43,8 @@
 */
 
 int main() {
-    // create sample graph for tests
-    Graph graph(4, 5);
-    graph.vertexNameList[0] = "springfield";
-    graph.vertexNameList[1] = "stlouis";
-    graph.vertexNameList[2] = "denver";
-    graph.vertexNameList[3] = "elpaso";
 
-    /* tests getVertexIndex function */
-    std::cout << "test graph.getVertexIndex(\"stlouis\"):\nexpected: 1\nresult: " << graph.getVertexIndex("stlouis") << "\n" << std::endl;
-    std::cout << "test graph.getVertexIndex(\"springfield\"):\nexpected: 0\nresult: " << graph.getVertexIndex("springfield") << "\n" << std::endl;
-    std::cout << "test graph.getVertexIndex(\"elpaso\"):\nexpected: 3\nresult: " << graph.getVertexIndex("elpaso") << "\n" << std::endl;
-    std::cout << "test graph.getVertexIndex(\"denver\"):\nexpected: 2\nresult: " << graph.getVertexIndex("denver") << "\n" << std::endl;
-    
-    /* tests readGraph function */
-    graph.readGraph("graph1.txt");
-    std::cout << "\ntest readGraph(\"graph1.txt\"): \nactual: \n";
-    for (int i = 0; i < graph.numVertices; i++) {
-        std::cout << graph.vertexNameList[i] << "'s edges: \n";
-        for (Graph::Edge edge : graph.adjacencyList[i]) {
-            std::cout << graph.vertexNameList[edge.toIndex] << " " << edge.cost << "\n";
-        }
-        std::cout << "\n";
-    }
-    std::cout << std::endl;
-
-    /* tests for invalid file passed into readGraph */
-    bool isValidfile = graph.readGraph("pie.txt");
-    std::cout << "\ntest for graph.readGraph with invalid file: \nexpected: 0\nactual: " << isValidfile << "\n" << std::endl;
-    
+    Graph graph;
+    graph.readGraph("graph2.txt");
+    graph.printGraph();
 }

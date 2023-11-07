@@ -23,7 +23,7 @@
  *   class declaration                                                                 *
  *-------------------------------------------------------------------------------------*/
 class Graph{
-    public://private:
+    private:
         /* private structs */
         // represents an edge in the the graph
         struct Edge{
@@ -45,7 +45,7 @@ class Graph{
         /* private methods */
         int getVertexIndex(std::string nameOfVertexToFind); // returns the index of a specified vertex
 
-    //public:
+    public:
         // constructor
         Graph(int numVerticesValue = 0, int numEdgesValue = 0) : 
             numVertices(numVerticesValue), numEdges(numEdgesValue) 
@@ -56,6 +56,7 @@ class Graph{
 
         /* public member functions */
         bool readGraph(std::string fileName); // reads in a new graph replacing old graph
+        void printGraph(); // prints the graph to cout using the same file format as fileName in readGraph
 
 
 };

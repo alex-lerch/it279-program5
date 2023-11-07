@@ -1,47 +1,20 @@
-test graph.getVertexIndex("stlouis"):
-expected: 1
-result: 1
-
-test graph.getVertexIndex("springfield"):
-expected: 0
-result: 0
-
-test graph.getVertexIndex("elpaso"):
-expected: 3
-result: 3
-
-test graph.getVertexIndex("denver"):
-expected: 2
-result: 2
-
-
-test readGraph("graph1.txt"): 
-actual: 
-MCO's edges: 
-LGA 1099
-PVD 1355
-LAX 2360
-
-LGA's edges: 
-MCO 1099
-SFO 2224
-
-PVD's edges: 
-MCO 1355
-LAX 2400
-
-LAX's edges: 
-MCO 2360
-PVD 2400
-SFO 400
-
-SFO's edges: 
-LGA 2224
-LAX 400
-
-
-
-test for graph.readGraph with invalid file: 
-expected: 0
-actual: 0
-
+8
+A
+B
+C
+D
+E
+F
+G
+H
+10
+A B 8
+A D 2
+A G 8
+B F 9
+C D 3
+C E 6
+D B 2
+E G 3
+E H 2
+F H 8

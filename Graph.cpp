@@ -15,7 +15,7 @@
  *-------------------------------------------------------------------------------------*/
 #include "Graph.h"
 #include<fstream>
-#include<iostream> // asl debug
+#include<iostream>
 
 /*-------------------------------------------------------------------------------------*
  *   public member function implementations                                            *
@@ -96,7 +96,7 @@ bool Graph::readGraph(std::string fileName) {
  *                                                                                     *
  *   description: finds the index of a vertex based on the name of the vertex          *
  *                                                                                     *
- *   returns: the index of the specified vertex or -1 if not found                     *   
+ *   returns: the index of the specified vertex or -1 if not found                     *
  *-------------------------------------------------------------------------------------*/
 int Graph::getVertexIndex(std::string nameOfVertexToFind) {
     for (int i = 0; i < vertexNameList.size(); i++) {
@@ -107,4 +107,36 @@ int Graph::getVertexIndex(std::string nameOfVertexToFind) {
 
     // return if vertex could not be found
     return -1;
+}
+
+
+
+/*-------------------------------------------------------------------------------------*
+ *   function name: printGraph()                                                       *
+ *                                                                                     *
+ *   description: prints the graph to std::cout using the same file format as          *
+ *                fileName in the readGraph(std::string) function                      *
+ *                                                                                     *
+ *   returns: n/a                                                                      *
+ *-------------------------------------------------------------------------------------*/
+void Graph::printGraph() {
+
+    // print the number of vertices
+    std::cout << numVertices << "\n";
+
+    // print the vertices with each vertex getting their own line
+    for (std::string vertex : vertexNameList) {
+        std::cout << vertex << "\n";
+    }
+
+    // print the number of edges
+    std::cout << numEdges << "\n";
+
+    // print the edges with each edge getting their own line
+    for (int i = 0; i < numVertices; i++) {
+        for (std::list<Edge>::iterator iter = adjacencyList[i].begin(); iter != adjacencyList[i].end(); ++iter) {
+            std::cout << vertexNameList[i] << " " << vertexNameList[iter->toIndex] << " " << iter->cost << "\n";
+        }
+    }
+
 }
