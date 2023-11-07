@@ -47,6 +47,10 @@ bool Graph::readGraph(std::string fileName) {
         return false;
     }
 
+    // clear old graph
+    adjacencyList.clear();
+    vertexNameList.clear();
+
     // get the number of vertices
     infile >> numVertices;
 
