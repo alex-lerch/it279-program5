@@ -1,0 +1,14 @@
+readGraph
+    does readGraph completely replace old graph so that none of the old graph remains?
+
+
+
+/*-----------------------------------------------------------*
+ *   schedule                                                *
+ *-----------------------------------------------------------*/
+ nov 7 -> readGraph completed
+ nov 9 -> printGraph completed
+ nov 14 -> computeShortestPaths
+ nov 16 -> computeTopologicalSort
+ nov 20 -> computeMinimumSpanningTree
+ nov 21 -> program cleanup and submission
