@@ -1,5 +1,5 @@
-readGraph
-    does readGraph completely replace old graph so that none of the old graph remains?
+todo:
+start either computeShortestPaths or computeTopologicalSort (dr califf )
 
 
 
@@ -12,3 +12,7 @@ readGraph
  nov 16 -> computeTopologicalSort
  nov 20 -> computeMinimumSpanningTree
  nov 21 -> program cleanup and submission
+
+ functions completed:
+ readGraph
+ printGraph
