@@ -1,0 +1,11 @@
+4
+springfield
+stlouis
+denver
+elpaso
+5
+springfield stlouis 2
+stlouis denver 6
+denver elpaso 5
+elpaso springfield 7
+elpaso stlouis 4

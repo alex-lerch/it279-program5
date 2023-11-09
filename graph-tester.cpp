@@ -16,6 +16,18 @@
           7              |        /
            \----------elpaso <-5-
 
+    4
+    springfield
+    stlouis
+    denver
+    elpaso
+    5
+    springfield stlouis 2
+    stlouis denver 6
+    denver elpaso 5
+    elpaso springfield 7
+    elpaso stlouis 4
+
 */
 
 /* graph1.txt:
@@ -45,6 +57,7 @@
 int main() {
 
     Graph graph;
-    graph.readGraph("graph2.txt");
+    graph.readGraph("miagraph.txt");
     graph.printGraph();
+    graph.computeTopologicalSort();
 }

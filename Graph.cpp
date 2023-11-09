@@ -16,6 +16,8 @@
 #include "Graph.h"
 #include<fstream>
 #include<iostream>
+#include<queue>
+
 
 /*-------------------------------------------------------------------------------------*
  *   public member function implementations                                            *
@@ -35,8 +37,8 @@ bool Graph::readGraph(std::string fileName) {
     std::ifstream infile; // used to read the file to be read
     std::string fromVertexName; // the name of the 'from' vertex being added to the graph
     std::string toVertexName; // the name of the 'to' vertex being added to the graph
-    int fromVertexIndex; // the index of the 'from' vertex being added to the graph
-    int toVertexIndex; // the index of the 'to' vertex being added to the graph
+    INDEX fromVertexIndex; // the index of the 'from' vertex being added to the graph
+    INDEX toVertexIndex; // the index of the 'to' vertex being added to the graph
     int newEdgeCost; // the cost of the new edge being added to the graph
 
     // setting up to read the file
@@ -98,10 +100,10 @@ bool Graph::readGraph(std::string fileName) {
  *                                                                                     *
  *   returns: the index of the specified vertex or -1 if not found                     *
  *-------------------------------------------------------------------------------------*/
-int Graph::getVertexIndex(std::string nameOfVertexToFind) {
-    for (int i = 0; i < vertexNameList.size(); i++) {
-        if (vertexNameList[i] == nameOfVertexToFind) {
-            return i;
+INDEX Graph::getVertexIndex(std::string nameOfVertexToFind) {
+    for (INDEX curIndex = 0; curIndex < vertexNameList.size(); curIndex++) {
+        if (vertexNameList[curIndex] == nameOfVertexToFind) {
+            return curIndex;
         }
     }
 
@@ -133,10 +135,102 @@ void Graph::printGraph() {
     std::cout << numEdges << "\n";
 
     // print the edges with each edge getting their own line
-    for (int i = 0; i < numVertices; i++) {
-        for (std::list<Edge>::iterator iter = adjacencyList[i].begin(); iter != adjacencyList[i].end(); ++iter) {
-            std::cout << vertexNameList[i] << " " << vertexNameList[iter->toIndex] << " " << iter->cost << "\n";
+    for (INDEX curIndex = 0; curIndex < numVertices; curIndex++) {
+        for (std::list<Edge>::iterator iter = adjacencyList[curIndex].begin(); iter != adjacencyList[curIndex].end(); ++iter) {
+            std::cout << vertexNameList[curIndex] << " " << vertexNameList[iter->toIndex] << " " << iter->cost << "\n";
         }
     }
 
+}
+
+
+
+/*-------------------------------------------------------------------------------------*
+ *   function name: computeTopologicalSort()                                           *
+ *                                                                                     *
+ *   description: prints to standard output a topological sort of the graph or an      *
+ *                error message indicating that a topological sort of the graph is     *
+ *                not possible.                                                        *
+ *                                                                                     *
+ *   returns: n/a                                                                      *
+ *-------------------------------------------------------------------------------------*/
+void Graph::computeTopologicalSort() {
+
+    // variables used
+    std::vector<int> inDegreeVector; // stores the number of dependencies for each vertex
+    std::queue<INDEX> vertexQueue; // queue that processes vertices
+    std::list<std::string> topologicalSortOrdering; // the order of the topological sort
+    INDEX queueVertexIndex; // the index of the current vertex being looked at
+    int topologicalSortCount = 0; // the number of vertices in the topological sort order
+
+    // set up the in-degree array from the graph
+    inDegreeVector = setupInDegreeVector();
+
+    // add any vertices with in-degree zero to the queue
+    for (INDEX curIndex = 0; curIndex < inDegreeVector.size(); curIndex++) {
+        if ( inDegreeVector[curIndex] == 0) {
+            vertexQueue.push(curIndex);
+        }
+    }
+
+    // while the queue is not empty
+    while ( !vertexQueue.empty() ) {
+        // remove the first vertex
+        queueVertexIndex = vertexQueue.front();
+        vertexQueue.pop();
+
+        // add name of curVertexIndex to the topological sorting list
+        topologicalSortOrdering.push_back(vertexNameList[queueVertexIndex]);
+        topologicalSortCount++;
+
+        // for each edge from that vertex
+        for (std::list<Edge>::iterator edge = adjacencyList[queueVertexIndex].begin(); edge != adjacencyList[queueVertexIndex].end(); ++edge) {
+
+            // reduce the in-degree by one
+            inDegreeVector[edge->toIndex]--;
+
+            // if the in-degree for the vertex is 0, then put it in the queue
+            if (inDegreeVector[edge->toIndex] == 0) {
+                vertexQueue.push(edge->toIndex);
+            }
+        }
+    }
+
+    // if the queue is empty and we have all vertices, then print the topological sort order
+    std::cout << "\n";
+    if (numVertices == topologicalSortCount) {
+        for (std::string vertex : topologicalSortOrdering) {
+            std::cout << vertex << " ";
+        }
+        std::cout << std::endl;
+    }
+    else {
+        std::cout << "topological sort is not possible" << std::endl;
+    }
+}
+
+
+
+/*-------------------------------------------------------------------------------------*
+ *   function name: setupInDegreeVector()                                              *
+ *                                                                                     *
+ *   description: creates the in-degree vector which stores the number of dependencies *
+ *                each vertex in the graph has.                                        *
+ *                                                                                     *
+ *   returns: the vector that stores the in-degree data for the graph                  *
+ *-------------------------------------------------------------------------------------*/
+std::vector<int> Graph::setupInDegreeVector() {
+
+    // create in-degree vector
+    std::vector<int> inDegreeVector(numVertices);
+
+    // cycle through the edges for each vertex and increment the vertex when it is pointed at
+    for (INDEX curIndex = 0; curIndex < adjacencyList.size(); curIndex++) {
+        for (std::list<Edge>::iterator iter = adjacencyList[curIndex].begin(); iter != adjacencyList[curIndex].end(); ++iter) {
+            inDegreeVector[iter->toIndex]++;
+        }
+    }
+
+    // return the vector
+    return inDegreeVector;
 }

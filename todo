@@ -1,5 +1,6 @@
 todo:
-start either computeShortestPaths or computeTopologicalSort (dr califf )
+finish computeTopologicalSort (dr califf )
+finish setupInDegreeVector function used in computeTopologicalSort
 
 
 
@@ -16,3 +17,6 @@ start either computeShortestPaths or computeTopologicalSort (dr califf )
  functions completed:
  readGraph
  printGraph
+
+questions:
+could we create the in-degree vector during read graph by incrementing with each toVertexName
