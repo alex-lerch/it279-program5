@@ -57,7 +57,7 @@
 int main() {
 
     Graph graph;
-    graph.readGraph("miagraph.txt");
+    graph.readGraph("graph1.txt");
     graph.printGraph();
     graph.computeTopologicalSort();
 }

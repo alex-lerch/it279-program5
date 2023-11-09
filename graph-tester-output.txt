@@ -1,11 +1,21 @@
-4
-wake_up
-bathroom
-brush_teeth
-change_clothes
-3
-wake_up bathroom 1
-wake_up brush_teeth 1
-brush_teeth change_clothes 1
-
-wake_up bathroom brush_teeth change_clothes 
+5
+MCO
+LGA
+PVD
+LAX
+SFO
+12
+MCO LGA 1099
+MCO PVD 1355
+MCO LAX 2360
+LGA MCO 1099
+LGA SFO 2224
+PVD MCO 1355
+PVD LAX 2400
+LAX MCO 2360
+LAX PVD 2400
+LAX SFO 400
+SFO LGA 2224
+SFO LAX 400
+Topological Sort:
+This graph cannot be topologically sorted.

@@ -196,17 +196,8 @@ void Graph::computeTopologicalSort() {
         }
     }
 
-    // if the queue is empty and we have all vertices, then print the topological sort order
-    std::cout << "\n";
-    if (numVertices == topologicalSortCount) {
-        for (std::string vertex : topologicalSortOrdering) {
-            std::cout << vertex << " ";
-        }
-        std::cout << std::endl;
-    }
-    else {
-        std::cout << "topological sort is not possible" << std::endl;
-    }
+    printTopologicalSortOutput(topologicalSortOrdering, topologicalSortCount);
+    
 }
 
 
@@ -233,4 +224,47 @@ std::vector<int> Graph::setupInDegreeVector() {
 
     // return the vector
     return inDegreeVector;
+}
+
+
+
+/*-------------------------------------------------------------------------------------*
+ *   function name: printTopologicalSortOutput()                                       *
+ *                                                                                     *
+ *   description: prints the correct output for the computeTopologicalSort function    *
+ *                to the screen.                                                       *
+ *                                                                                     *
+ *   returns: n/a                                                                      *
+ *-------------------------------------------------------------------------------------*/
+void Graph::printTopologicalSortOutput(std::list<std::string>& topologicalSortOrdering, int numVerticesInSortList) {
+
+    // variables used
+    int count = 0; // the count used to know when we are at the last vertex in the ordering
+
+    // print out the title
+    std::cout << "Topological Sort:\n";
+
+    // if the graph can be sorted then print out the order
+    if (numVertices == numVerticesInSortList) {
+        for (std::list<std::string>::iterator curVertex = topologicalSortOrdering.begin(); curVertex != topologicalSortOrdering.end(); ++curVertex) {
+
+            // increase the count 
+            count++;
+
+            // if we are at the last vertex then don't print the next arrow
+            if (count == numVerticesInSortList) {
+                std::cout << *curVertex << "\n";
+            }
+
+            // we are not at the last vertex so we need to print the next arrow
+            else {
+                std::cout << *curVertex << " --> ";
+            }
+        }
+    }
+
+    // the graph cannot be sorted and so a message indicating so is printed
+    else {
+        std::cout << "This graph cannot be topologically sorted.\n";
+    }
 }
