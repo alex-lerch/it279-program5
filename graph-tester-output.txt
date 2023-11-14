@@ -1,17 +1,12 @@
-pathRepresentation:
-vertex name = springfield
-	found = 1
-	total distance = 0
-	previous vertex = 
-vertex name = stlouis
-	found = 1
-	total distance = 2
-	previous vertex = springfield
-vertex name = denver
-	found = 1
-	total distance = 8
-	previous vertex = stlouis
-vertex name = elpaso
-	found = 1
-	total distance = 13
-	previous vertex = denver
+Shortest paths from C:
+C --> D --> B || Weight: 5
+C --> D || Weight: 3
+C --> E || Weight: 6
+C --> D --> B --> F || Weight: 14
+C --> E --> G || Weight: 9
+C --> E --> H || Weight: 8
+
+
+
+Topological Sort:
+A --> C --> D --> E --> B --> G --> F --> H

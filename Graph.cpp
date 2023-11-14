@@ -26,6 +26,11 @@
 #include<iostream>
 #include<queue>
 
+/*-------------------------------------------------------------------------------------*
+ *   definitions                                                                       *
+ *-------------------------------------------------------------------------------------*/
+#define END_OF_PATH -1
+
 
 /*-------------------------------------------------------------------------------------*
  *   function implementations                                                          *
@@ -334,10 +339,12 @@ void Graph::computeShortestPaths(std::string startingVertexName) {
     std::vector<PathVertex> pathRepresentation(numVertices); // represents the array that stores all information needed for the path to all vertices
     int numPathsFound = 0; // the number of paths we have found
     QueueVertex nextShortestPath; // represents the next shortest path that we want to add
+    std::list<std::string> path; // represents a path from one vertex to another
+    INDEX vertexIndexToAdd; // the index of a vertex that we are wanting to add to the path
 
     // setup values for the starting vertex and update the number of paths found
     pathRepresentation[startingVertexIndex].totalDistance = 0;
-    pathRepresentation[startingVertexIndex].prevVertexIndex = -1;
+    pathRepresentation[startingVertexIndex].prevVertexIndex = END_OF_PATH;
     pathRepresentation[startingVertexIndex].found = true;
     numPathsFound = 1;
 
@@ -357,7 +364,7 @@ void Graph::computeShortestPaths(std::string startingVertexName) {
         nextShortestPathQueue.pop();
 
         // if nextShortestPath has not been found yet, update pathRepresentation, increment numPathsFound, and add adjacent edges
-        if (pathRepresentation[nextShortestPath.toVertexIndex].found == false) {
+        if (!pathRepresentation[nextShortestPath.toVertexIndex].found) {
 
             // update pathRepresentation
             pathRepresentation[nextShortestPath.toVertexIndex].prevVertexIndex = nextShortestPath.fromVertexIndex;
@@ -372,7 +379,7 @@ void Graph::computeShortestPaths(std::string startingVertexName) {
             for (Edge curEdge : adjacencyList[nextShortestPath.toVertexIndex]) {
 
                 // if the edge/path has not been found yet, enqueue new QueueVertex item onto the queue
-                if (pathRepresentation[curEdge.toIndex].found == false) {
+                if (!pathRepresentation[curEdge.toIndex].found) {
 
                     // enqueue new item onto the queue
                     nextShortestPathQueue.push(QueueVertex(nextShortestPath.toVertexIndex, curEdge.toIndex, nextShortestPath.totalPathCost + curEdge.cost));
@@ -381,16 +388,61 @@ void Graph::computeShortestPaths(std::string startingVertexName) {
         }
     }
 
-    // asl debug print out the pathRepresentation
-    std::cout << "pathRepresentation:" << std::endl;
-    int index = 0;
+    // print out the paths that can be found
+    std::cout << "Shortest paths from " << startingVertexName << ":\n";
+    int curIndex = 0;
     for (PathVertex curVertex : pathRepresentation) {
-        std::cout << "vertex name = " << vertexNameList[index] << std::endl;
-        std::cout << "\tfound = " << curVertex.found << std::endl;
-        std::cout << "\ttotal distance = " << curVertex.totalDistance << std::endl;
-        std::cout << "\tprevious vertex = " << vertexNameList[curVertex.prevVertexIndex] << std::endl;
-        index++;
+        
+        // if a path to curVertex has been found
+        if (curVertex.found && (startingVertexIndex != curIndex)) {
+
+            /* build the list that holds the vertex names of the path */
+            vertexIndexToAdd = curIndex;
+            do {
+                // add the vertexIndexToAdd to the path list
+                path.push_front(vertexNameList[vertexIndexToAdd]);
+
+                // update vertexIndexToAdd
+                vertexIndexToAdd = pathRepresentation[vertexIndexToAdd].prevVertexIndex;
+
+            } while (pathRepresentation[vertexIndexToAdd].prevVertexIndex != END_OF_PATH);
+
+            // add the starting vertex to the path
+            path.push_front(startingVertexName);
+
+            /* print out the list to the screen */
+            printPathList(path);
+
+            // print weight of the path
+            std::cout << " || Weight: " << curVertex.totalDistance;
+            std::cout << std::endl;
+
+            // clear the path list
+            path.clear();
+
+
+        }
+
+        // update curIndex
+        curIndex++;
     }
 
+
+}
+
+
+
+void Graph::printPathList(std::list<std::string>& pathList) {
+
+    int count = 0;
+    for (std::string curVertexName : pathList) {
+        if (count == pathList.size() - 1) {
+            std::cout << curVertexName;
+        }
+        else {
+            std::cout << curVertexName << " --> ";
+        }
+        count++;
+    }
 
 }

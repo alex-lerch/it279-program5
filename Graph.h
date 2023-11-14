@@ -51,6 +51,7 @@ class Graph{
         INDEX getVertexIndex(std::string nameOfVertexToFind); // returns the index of a specified vertex
         std::vector<int> setupInDegreeVector(); // creates the in-degree vector used in computeTopologicalSort function
         void printTopologicalSortOutput(std::list<std::string>& topologicalSortOrdering, int numVerticesInSortList); // prints the correct output for the computeTopologicalSort function
+        void printPathList(std::list<std::string>& pathList); // prints out the list passed
 
     public:
         // constructor

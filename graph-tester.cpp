@@ -57,8 +57,10 @@
 int main() {
 
     Graph graph;
-    graph.readGraph("aslgraph.txt");
-    graph.computeShortestPaths("springfield");
+    graph.readGraph("graph2.txt");
+    graph.computeShortestPaths("C");
+    std::cout << "\n\n" << std::endl;
+    graph.computeTopologicalSort();
 }
 
 

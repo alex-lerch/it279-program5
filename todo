@@ -20,3 +20,4 @@ complete computeShortestPaths
 
 questions:
 could we create the in-degree vector during read graph by incrementing with each toVertexName
+how to make computeShortestPaths more readable
