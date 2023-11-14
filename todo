@@ -1,5 +1,7 @@
 todo:
 complete computeShortestPaths
+cleanup QueueVertex struct format
+cleanup computeShortestPaths by adding a couple of private member functions
 
 
 
