@@ -57,7 +57,30 @@
 int main() {
 
     Graph graph;
-    graph.readGraph("miagraph.txt");
-    graph.printGraph();
-    graph.computeTopologicalSort();
+    graph.readGraph("aslgraph.txt");
+    graph.computeShortestPaths("springfield");
 }
+
+
+// asl debug print the queue 
+/*
+std::cout << "the queue when pushed all startingVertex's adjacent vertices:" << std::endl;;
+while(!nextShortestPath.empty()) {
+    QueueVertex curVertex = nextShortestPath.top();
+    nextShortestPath.pop();
+    std::cout << "from: " << curVertex.fromVertexIndex << "\nto: " << curVertex.toVertexIndex << "\ntotal path cost: " << curVertex.totalPathCost << std::endl;
+} */
+
+
+/*
+// asl debug print out the pathRepresentation
+    std::cout << "pathRepresentation:" << std::endl;
+    int index = 0;
+    for (PathVertex curVertex : pathRepresentation) {
+        std::cout << "vertex name = " << vertexNameList[index] << std::endl;
+        std::cout << "\tfound = " << curVertex.found << std::endl;
+        std::cout << "\ttotal distance = " << curVertex.totalDistance << std::endl;
+        std::cout << "\tprevious vertex = " << vertexNameList[curVertex.prevVertexIndex] << std::endl;
+        index++;
+    }
+*/

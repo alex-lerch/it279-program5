@@ -65,6 +65,7 @@ class Graph{
         bool readGraph(std::string fileName); // reads in a new graph replacing old graph
         void printGraph(); // prints the graph to cout using the same file format as fileName in readGraph
         void computeTopologicalSort(); // prints a topological sort of the graph or print error if sort not possible
+        void computeShortestPaths(std::string startingVertexName); // prints out the path and cost to each vertex from vertexName
 
 
 };

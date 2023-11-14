@@ -1,11 +1,17 @@
-4
-wake_up
-bathroom
-brush_teeth
-change_clothes
-3
-wake_up bathroom 1
-wake_up brush_teeth 1
-brush_teeth change_clothes 1
-Topological Sort:
-wake_up --> bathroom --> brush_teeth --> change_clothes
+pathRepresentation:
+vertex name = springfield
+	found = 1
+	total distance = 0
+	previous vertex = 
+vertex name = stlouis
+	found = 1
+	total distance = 2
+	previous vertex = springfield
+vertex name = denver
+	found = 1
+	total distance = 8
+	previous vertex = stlouis
+vertex name = elpaso
+	found = 1
+	total distance = 13
+	previous vertex = denver

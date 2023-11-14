@@ -8,6 +8,14 @@
  *                                                                                     *
  *   Author: Alex Lerch                                                                *
  *                                                                                     *
+ *   Functions:                                                                        *
+ *      readGraph(std::string)  ......................  reads in new graph             *
+ *      getVertexIndex(std::string)  .................  finds index of a vertex        *
+ *      printGraph()  ................................  prints graph structure         *
+ *      computeTopologicalSort()  ....................  computes and prints the sort   *
+ *      setupInDegreeVector()  .......................  creates list of dependencies   *
+ *      printTopologicalSortOutput(list<string>,int) .  prints sort to screen          *
+ *                                                                                     *
  *-------------------------------------------------------------------------------------*/
 
 /*-------------------------------------------------------------------------------------*
@@ -20,7 +28,7 @@
 
 
 /*-------------------------------------------------------------------------------------*
- *   public member function implementations                                            *
+ *   function implementations                                                          *
  *-------------------------------------------------------------------------------------*/
 
 /*-------------------------------------------------------------------------------------*
@@ -196,6 +204,7 @@ void Graph::computeTopologicalSort() {
         }
     }
 
+    // print the topological sort
     printTopologicalSortOutput(topologicalSortOrdering, topologicalSortCount);
     
 }
@@ -267,4 +276,121 @@ void Graph::printTopologicalSortOutput(std::list<std::string>& topologicalSortOr
     else {
         std::cout << "This graph cannot be topologically sorted.\n";
     }
+}
+
+
+
+/*-------------------------------------------------------------------------------------*
+ *   function name: computeShortestPaths(std::string)                                  *
+ *                                                                                     *
+ *   description: prints out the path and cost from the parameter vertex to each       *
+ *                other reachable vertex in the graph.                                 *
+ *                                                                                     *
+ *   returns: n/a                                                                      *
+ *-------------------------------------------------------------------------------------*/
+void Graph::computeShortestPaths(std::string startingVertexName) {
+
+    /* structs needed */
+    // represents a vertex in the overall path
+    struct PathVertex { 
+        public:
+            // data members
+            bool found; // is the vertex already found
+            int totalDistance; // the total distance of the vertex
+            INDEX prevVertexIndex; // the index of the previous vertex in the path
+
+            // constructor
+            PathVertex(bool foundValue = false, int totalDistanceValue = INT_MAX, INDEX prevVertexValue = INT_MAX)
+                : found(foundValue), totalDistance(totalDistanceValue), prevVertexIndex(prevVertexValue) {}
+    };
+
+    // represents a vertex in the nextShortestPath queue
+    struct QueueVertex {
+        public:
+            // data members
+            INDEX fromVertexIndex; // the index of the from vertex
+            INDEX toVertexIndex; // the index of the vertex that fromVertex is going to
+            int totalPathCost; // the total path cost to go to toVertex
+
+            /* operator overloads to allow us to compare the totalPathCost of two QueueVertex items */
+            bool operator<(const QueueVertex& rhs) const {
+                return totalPathCost < rhs.totalPathCost;
+            }
+            bool operator>(const QueueVertex& rhs) const {
+                return totalPathCost > rhs.totalPathCost;
+            }
+            bool operator==(const QueueVertex& rhs) const {
+                return totalPathCost == rhs.totalPathCost;
+            }
+
+            // constructor
+            QueueVertex(INDEX fromVertexValue = -1, INDEX toVertexValue = -1, int totalPathCostValue = 0)
+                : fromVertexIndex(fromVertexValue), toVertexIndex(toVertexValue), totalPathCost(totalPathCostValue) {}
+    };
+
+    // variables used
+    std::priority_queue< QueueVertex, std::vector<QueueVertex>, std::greater<QueueVertex> > nextShortestPathQueue; // holds the QueueVertex items we want to consider for the shortest path
+    INDEX startingVertexIndex = getVertexIndex(startingVertexName); // the index of the starting vertex that we are finding the paths for
+    std::vector<PathVertex> pathRepresentation(numVertices); // represents the array that stores all information needed for the path to all vertices
+    int numPathsFound = 0; // the number of paths we have found
+    QueueVertex nextShortestPath; // represents the next shortest path that we want to add
+
+    // setup values for the starting vertex and update the number of paths found
+    pathRepresentation[startingVertexIndex].totalDistance = 0;
+    pathRepresentation[startingVertexIndex].prevVertexIndex = -1;
+    pathRepresentation[startingVertexIndex].found = true;
+    numPathsFound = 1;
+
+    /* fill the nextShortestPath queue with edges going out of the starting vertex */
+    // for each edge adjacent to the starting vertex
+    for ( Edge curEdge : adjacencyList[startingVertexIndex]) {
+
+        // add the edge as a QueueVertex object to the queue
+        nextShortestPathQueue.push(QueueVertex(startingVertexIndex, curEdge.toIndex, curEdge.cost)); 
+    }
+
+    /* while the nextShortestPath is not empty and we have not found all of the paths */
+    while ( !nextShortestPathQueue.empty() && (numPathsFound != numVertices)) {
+
+        // take the next shortest path
+        nextShortestPath = nextShortestPathQueue.top();
+        nextShortestPathQueue.pop();
+
+        // if nextShortestPath has not been found yet, update pathRepresentation, increment numPathsFound, and add adjacent edges
+        if (pathRepresentation[nextShortestPath.toVertexIndex].found == false) {
+
+            // update pathRepresentation
+            pathRepresentation[nextShortestPath.toVertexIndex].prevVertexIndex = nextShortestPath.fromVertexIndex;
+            pathRepresentation[nextShortestPath.toVertexIndex].found = true;
+            pathRepresentation[nextShortestPath.toVertexIndex].totalDistance = nextShortestPath.totalPathCost;
+
+            // increment numPathsFound
+            numPathsFound++;
+
+            /* add adjacent edges */
+            // for each edge adjacent to nextShortestPath
+            for (Edge curEdge : adjacencyList[nextShortestPath.toVertexIndex]) {
+
+                // if the edge/path has not been found yet, enqueue new QueueVertex item onto the queue
+                if (pathRepresentation[curEdge.toIndex].found == false) {
+
+                    // enqueue new item onto the queue
+                    nextShortestPathQueue.push(QueueVertex(nextShortestPath.toVertexIndex, curEdge.toIndex, nextShortestPath.totalPathCost + curEdge.cost));
+                }
+            }
+        }
+    }
+
+    // asl debug print out the pathRepresentation
+    std::cout << "pathRepresentation:" << std::endl;
+    int index = 0;
+    for (PathVertex curVertex : pathRepresentation) {
+        std::cout << "vertex name = " << vertexNameList[index] << std::endl;
+        std::cout << "\tfound = " << curVertex.found << std::endl;
+        std::cout << "\ttotal distance = " << curVertex.totalDistance << std::endl;
+        std::cout << "\tprevious vertex = " << vertexNameList[curVertex.prevVertexIndex] << std::endl;
+        index++;
+    }
+
+
 }
