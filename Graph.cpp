@@ -19,6 +19,10 @@
  *      printPathList(list<string>)  ................................  prints the list passed                 *
  *      printShortestPathsOutput(string, vector<PathVertex>) ........  prints output for computeShortestPaths *
  *      buildPathRepresentation(vector<PathVertex>, priority_queue) .  builds the pathRepresentation vector   *
+ *      computeMinimumSpanningTree()  ...............................  prints edges, weight of minimum tree   *
+ *      populateEdgesList(list<Edge>)  ..............................  adds the edges of a graph to a list    *
+ *      calculateSpanningTreeTotalCost(list<Edge>)  .................  calculates the total cost of the tree  *
+ *      printMinimumSpanningTreeOutput(list<Edge>, unsigned int)  ...  prints the output for spanning tree    *
  *                                                                                                            *
  *------------------------------------------------------------------------------------------------------------*/
 
@@ -33,7 +37,7 @@
 /*-------------------------------------------------------------------------------------*
  *   constants                                                                         *
  *-------------------------------------------------------------------------------------*/
-const int END_OF_PATH = -1; // represent the end vertex when creating paths
+const int END_OF_PATH = -1; // represents the end vertex when creating paths
 
 
 /*-------------------------------------------------------------------------------------*
@@ -103,7 +107,7 @@ bool Graph::readGraph(std::string fileName) {
         toVertexIndex = getVertexIndex(toVertexName);
 
         // add edge to the adjacency list
-        adjacencyList[fromVertexIndex].push_back(Graph::Edge(toVertexIndex, newEdgeCost));
+        adjacencyList[fromVertexIndex].push_back(Graph::AdjListVertex(toVertexIndex, newEdgeCost));
     }
 
     // close the file
@@ -159,7 +163,7 @@ void Graph::printGraph() {
 
     // print the edges with each edge getting their own line
     for (int curIndex = 0; curIndex < numVertices; curIndex++) {
-        for (std::list<Edge>::iterator iter = adjacencyList[curIndex].begin(); iter != adjacencyList[curIndex].end(); ++iter) {
+        for (std::list<AdjListVertex>::iterator iter = adjacencyList[curIndex].begin(); iter != adjacencyList[curIndex].end(); ++iter) {
             std::cout << vertexNameList[curIndex] << " " << vertexNameList[iter->toIndex] << " " << iter->cost << "\n";
         }
     }
@@ -212,7 +216,7 @@ void Graph::computeTopologicalSort() {
         topologicalSortCount++;
 
         // for each edge from that vertex
-        for (std::list<Edge>::iterator edge = adjacencyList[queueVertexIndex].begin(); edge != adjacencyList[queueVertexIndex].end(); ++edge) {
+        for (std::list<AdjListVertex>::iterator edge = adjacencyList[queueVertexIndex].begin(); edge != adjacencyList[queueVertexIndex].end(); ++edge) {
 
             // reduce the in-degree by one
             inDegreeVector[edge->toIndex]--;
@@ -246,7 +250,7 @@ std::vector<int> Graph::setupInDegreeVector() {
 
     // cycle through the edges for each vertex and increment the vertex when it is pointed at
     for (int curIndex = 0; curIndex < adjacencyList.size(); curIndex++) {
-        for (std::list<Edge>::iterator iter = adjacencyList[curIndex].begin(); iter != adjacencyList[curIndex].end(); ++iter) {
+        for (std::list<AdjListVertex>::iterator iter = adjacencyList[curIndex].begin(); iter != adjacencyList[curIndex].end(); ++iter) {
             inDegreeVector[iter->toIndex]++;
         }
     }
@@ -303,8 +307,8 @@ void Graph::printTopologicalSortOutput(std::list<std::string>& topologicalSortOr
 /*-------------------------------------------------------------------------------------*
  *   function name: computeShortestPaths(std::string)                                  *
  *                                                                                     *
- *   description: prints out the path and cost from the parameter vertex to each       *
- *                other reachable vertex in the graph.                                 *
+ *   description: computes and prints out the path and cost from the parameter vertex  *
+ *                to each other reachable vertex in the graph.                         *
  *                                                                                     *
  *   returns: n/a                                                                      *
  *-------------------------------------------------------------------------------------*/
@@ -313,8 +317,8 @@ void Graph::computeShortestPaths(std::string startingVertexName) {
     /*-------------------------------------------------------------------------------------*
      *   variables used                                                                    *
      *-------------------------------------------------------------------------------------*/
-    // holds the QueueVertex items we want to consider for the shortest path
-    std::priority_queue< QueueVertex, std::vector<QueueVertex>, std::greater<QueueVertex> > nextShortestPathQueue;
+    // holds the Edge items we want to consider for the shortest path
+    std::priority_queue< Edge, std::vector<Edge>, std::greater<Edge> > nextShortestPathQueue;
 
     // the index of the starting vertex that we are finding the paths for
     int startingVertexIndex = getVertexIndex(startingVertexName); 
@@ -332,10 +336,10 @@ void Graph::computeShortestPaths(std::string startingVertexName) {
 
     /* fill the nextShortestPath queue with edges going out of the starting vertex */
     // for each edge adjacent to the starting vertex
-    for ( Edge curEdge : adjacencyList[startingVertexIndex]) {
+    for ( AdjListVertex curEdge : adjacencyList[startingVertexIndex]) {
 
-        // add the edge as a QueueVertex object to the queue
-        nextShortestPathQueue.push(QueueVertex(startingVertexIndex, curEdge.toIndex, curEdge.cost)); 
+        // add the edge as a Edge object to the queue
+        nextShortestPathQueue.push(Edge(startingVertexIndex, curEdge.toIndex, curEdge.cost)); 
     }
     
     // build the pathRepresentation
@@ -460,7 +464,7 @@ void Graph::printShortestPathsOutput(std::string startingVertexName, std::vector
  *   returns: n/a                                                                      *
  *-------------------------------------------------------------------------------------*/
 void Graph::buildPathRepresentation(std::vector<PathVertex>& pathRepresentation,
-    std::priority_queue< QueueVertex, std::vector<QueueVertex>, std::greater<QueueVertex> >& nextShortestPathQueue) {
+    std::priority_queue< Edge, std::vector<Edge>, std::greater<Edge> >& nextShortestPathQueue) {
 
     /*-------------------------------------------------------------------------------------*
      *   variables used                                                                    *
@@ -469,7 +473,7 @@ void Graph::buildPathRepresentation(std::vector<PathVertex>& pathRepresentation,
     int numPathsFound = 1; 
 
     // represents the next shortest path that we want to add
-    QueueVertex nextShortestPath; 
+    Edge nextShortestPath; 
 
     /*-------------------------------------------------------------------------------------*
      *   find the correct paths and add them to the pathRepresentation                     *
@@ -487,22 +491,181 @@ void Graph::buildPathRepresentation(std::vector<PathVertex>& pathRepresentation,
             // update pathRepresentation
             pathRepresentation[nextShortestPath.toVertexIndex].prevVertexIndex = nextShortestPath.fromVertexIndex;
             pathRepresentation[nextShortestPath.toVertexIndex].found = true;
-            pathRepresentation[nextShortestPath.toVertexIndex].totalDistance = nextShortestPath.totalPathCost;
+            pathRepresentation[nextShortestPath.toVertexIndex].totalDistance = nextShortestPath.cost;
 
             // increment numPathsFound
             numPathsFound++;
 
             /* add adjacent edges */
             // for each edge adjacent to nextShortestPath
-            for (Edge curEdge : adjacencyList[nextShortestPath.toVertexIndex]) {
+            for (AdjListVertex curEdge : adjacencyList[nextShortestPath.toVertexIndex]) {
 
-                // if the edge/path has not been found yet, enqueue new QueueVertex item onto the queue
+                // if the edge/path has not been found yet, enqueue new Edge item onto the queue
                 if (!pathRepresentation[curEdge.toIndex].found) {
 
                     // enqueue new item onto the queue
-                    nextShortestPathQueue.push(QueueVertex(nextShortestPath.toVertexIndex, curEdge.toIndex, nextShortestPath.totalPathCost + curEdge.cost));
+                    nextShortestPathQueue.push(Edge(nextShortestPath.toVertexIndex, curEdge.toIndex, nextShortestPath.cost + curEdge.cost));
                 }
             }
         }
     }
+}
+
+
+
+/*-------------------------------------------------------------------------------------*
+ *   function name: computeMinimumSpanningTree()                                       *
+ *                                                                                     *
+ *   description: computes the minimum spanning tree, then prints the edges, edge      *
+ *                weight, and total weight of the tree.                                *
+ *                                                                                     *
+ *   precondition: the graph must be connected                                         *
+ *                                                                                     *
+ *   returns: n/a                                                                      *
+ *-------------------------------------------------------------------------------------*/
+void Graph::computeMinimumSpanningTree() {
+
+    /*-------------------------------------------------------------------------------------*
+     *   variables used                                                                    *
+     *-------------------------------------------------------------------------------------*/
+    // list of the edges in the graph
+    std::list<Edge> edgesList;
+
+    // the minimum spanning tree
+    std::list<Edge> minSpanTreeEdges;
+
+    // is the spanning tree complete
+    bool spanningTreeComplete = false;
+
+    // current edge we are looking at
+    Edge curEdge;
+
+    // the disjoint set that represents which vertices are connected in the spanning tree
+    DisjointSet vertexDisjSet(numVertices);
+
+    // the total cost of the minimum spanning tree
+    unsigned int minSpanTreeTotalCost;
+
+
+    /*-------------------------------------------------------------------------------------*
+     *   compute the minimum spanning tree                                                 *
+     *-------------------------------------------------------------------------------------*/
+    // populate edgesList with the edges we need from the adjacency list of the graph
+    populateEdgesList(edgesList);
+
+    // sort the edgesList
+    edgesList.sort();
+
+    // until we're down to one tree(or out of edges)
+    while (!spanningTreeComplete) {
+
+        // get the next edge we want to try to add to the spanning tree
+        curEdge = edgesList.front();
+        edgesList.pop_front();
+
+        // if the vertices for the curEdge are not in the same tree
+        if (vertexDisjSet.find(curEdge.fromVertexIndex) != vertexDisjSet.find(curEdge.toVertexIndex)) {
+
+            // add curEdge to the minimum spanning tree
+            minSpanTreeEdges.push_back(curEdge);
+
+            // connect the two trees and check if the spanning tree is complete
+            if (vertexDisjSet.doUnion(curEdge.fromVertexIndex, curEdge.toVertexIndex)) {
+                spanningTreeComplete = true;
+            }
+
+        }
+    }
+
+    /*-------------------------------------------------------------------------------------*
+     *   compute total cost of the spanning tree                                           *
+     *-------------------------------------------------------------------------------------*/
+    minSpanTreeTotalCost = calculateSpanningTreeTotalCost(minSpanTreeEdges);
+
+    /*-------------------------------------------------------------------------------------*
+     *   print the output for the minimum spanning tree                                    *
+     *-------------------------------------------------------------------------------------*/
+    printMinimumSpanningTreeOutput(minSpanTreeEdges, minSpanTreeTotalCost);
+
+}
+
+
+
+/*-------------------------------------------------------------------------------------*
+ *   function name: populateEdgesList()                                                *
+ *                                                                                     *
+ *   description: sorts the edges of the graph                                         *
+ *                                                                                     *
+ *   returns: n/a                                                                      *
+ *-------------------------------------------------------------------------------------*/
+void Graph::populateEdgesList(std::list<Edge>& edgesList) {
+
+    /*-------------------------------------------------------------------------------------*
+     *   add the edges to the list                                                         *
+     *-------------------------------------------------------------------------------------*/
+    // initialize the current index to the first vertex in the adjacency list
+    int curIndex = 0;
+
+    /* go through the adjacency list */
+    for (std::list<AdjListVertex> curVertexEdges : adjacencyList) {
+
+        /* go through the edges that are adjacent to the current vertex in the adjacency list we are looking at */
+        for (AdjListVertex curEdge : curVertexEdges) {
+
+            // add the edge to edgesList
+            edgesList.push_back(Edge(curIndex, curEdge.toIndex, curEdge.cost));
+            
+        }
+
+        // move the current index to the next vertex in the adjacency list
+        curIndex++;
+    }
+
+}
+
+
+
+/*-------------------------------------------------------------------------------------*
+ *   function name: calculateSpanningTreeTotalCost(list<Edge>)                         *
+ *                                                                                     *
+ *   description: calculates the total cost of the minimum spanning tree               *
+ *                                                                                     *
+ *   returns: the total cost of the minimum spanning tree                              *
+ *-------------------------------------------------------------------------------------*/
+unsigned int Graph::calculateSpanningTreeTotalCost(std::list<Edge>& minSpanTreeEdges) {
+
+    // initialize the totalCost
+    int totalCost = 0;
+
+    // go through the minimum spanning tree and add the cost of each edge to the total
+    for (Edge curEdge : minSpanTreeEdges) {
+        totalCost += curEdge.cost;
+    }
+
+    // return the total cost of the minimum spanning tree
+    return totalCost;
+}
+
+
+
+/*-------------------------------------------------------------------------------------*
+ *   function name: printMinimumSpanningTreeOutput(list<Edge>)                         *
+ *                                                                                     *
+ *   description: prints the correct output for the computeMinimumSpanningTree         *
+ *                function                                                             *
+ *                                                                                     *
+ *   returns: n/a                                                                      *
+ *-------------------------------------------------------------------------------------*/
+// prints the correct output for the computeMinimumSpanningTree function
+void Graph::printMinimumSpanningTreeOutput(std::list<Edge>& minSpanTreeEdges, unsigned int minSpanTreeTotalCost) {
+
+    std::cout << "Minimum Spanning Tree:\n";
+
+    /* go through the spanning tree and print out the edges and their cost */
+    for (Edge curEdge : minSpanTreeEdges) {
+        std::cout << vertexNameList[curEdge.fromVertexIndex] << " -- " << vertexNameList[curEdge.toVertexIndex] << " || " << "weight: " << curEdge.cost << "\n";
+    }
+
+    // print out the total cost of the minimum spanning tree
+    std::cout << "Total Cost: " << minSpanTreeTotalCost;
 }

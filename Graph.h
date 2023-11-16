@@ -18,6 +18,7 @@
 #include<list>
 #include<string>
 #include<queue>
+#include "DisjointSet.h"
 
 /*-------------------------------------------------------------------------------------*
  *   class: Graph                                                                      *
@@ -29,13 +30,14 @@
  *        printGraph                                                                   *
  *        computeTopologicalSort                                                       *
  *        computeShortestPaths                                                         *
+ *        computeMinimumSpanningTree                                                   *
  *                                                                                     *
  *   private:                                                                          *
  *                                                                                     *
  *      private structs:                                                               *
- *         Edge                                                                        *
+ *         AdjListVertex                                                               *
  *         PathVertex                                                                  *
- *         QueueVertex                                                                 *
+ *         Edge                                                                        *
  *                                                                                     *
  *      private data members:                                                          *
  *         adjacencyList                                                               *
@@ -50,14 +52,17 @@
  *         printPathList                                                               *
  *         printShortestPathsOutput                                                    *
  *         buildPathRepresentation                                                     *
+ *         populateEdgesList                                                           *
+ *         calculateSpanningTreeTotalCost                                              *
+ *         printMinimumSpanningTreeOutput                                              *
  *-------------------------------------------------------------------------------------*/
 class Graph{
     private:
         /*-------------------------------------------------------------------------------------*
          *   private structs                                                                   *
          *-------------------------------------------------------------------------------------*/
-        /* represents an edge in the the graph */
-        struct Edge{
+        /* represents an edge in the the adjacency list */
+        struct AdjListVertex{
             public:
                 /* data members */
                 // the index of the vertex that is adjacent to the vertex in the adjacencyList
@@ -66,8 +71,14 @@ class Graph{
                 // cost of the edge between vector vertex and destination
                 int cost;
 
+                /* operator overload */
+                bool operator<(const AdjListVertex& rhs) const {
+                    return std::tie(cost, toIndex) < std::tie(rhs.cost, rhs.toIndex);
+                }
+
                 /* constructor */
-                Edge(int toIndexValue = 0, int costValue = 0) : toIndex(toIndexValue), cost(costValue) {}
+                AdjListVertex(int toIndexValue = 0, int costValue = 0, int fromIndexValue = 0) 
+                    : toIndex(toIndexValue), cost(costValue) {}
         };
 
 
@@ -90,8 +101,8 @@ class Graph{
         };
 
 
-        /* represents a vertex in the nextShortestPath queue */
-        struct QueueVertex {
+        /* represents an edge in the nextShortestPath queue and in the minimum spanning tree */
+        struct Edge {
             public:
                 /* data members */
                 // the index of the from vertex
@@ -101,29 +112,29 @@ class Graph{
                 int toVertexIndex; 
 
                 // the total path cost to go to toVertex
-                int totalPathCost; 
+                int cost; 
 
-                /* operator overloads to allow us to compare the totalPathCost of two QueueVertex items */
-                bool operator<(const QueueVertex& rhs) const {
-                    return totalPathCost < rhs.totalPathCost;
+                /* operator overloads to allow us to compare the totalPathCost of two Edge items */
+                bool operator<(const Edge& rhs) const {
+                    return std::tie(cost, fromVertexIndex, toVertexIndex) < std::tie(rhs.cost, rhs.fromVertexIndex, rhs.toVertexIndex);
                 }
-                bool operator>(const QueueVertex& rhs) const {
-                    return totalPathCost > rhs.totalPathCost;
+                bool operator>(const Edge& rhs) const {
+                    return std::tie(cost, fromVertexIndex, toVertexIndex) > std::tie(rhs.cost, rhs.fromVertexIndex, rhs.toVertexIndex);
                 }
-                bool operator==(const QueueVertex& rhs) const {
-                    return totalPathCost == rhs.totalPathCost;
+                bool operator==(const Edge& rhs) const {
+                    return std::tie(cost, fromVertexIndex, toVertexIndex) == std::tie(rhs.cost, rhs.fromVertexIndex, rhs.toVertexIndex);
                 }
 
                 /* constructor */
-                QueueVertex(int fromVertexValue = -1, int toVertexValue = -1, int totalPathCostValue = 0)
-                    : fromVertexIndex(fromVertexValue), toVertexIndex(toVertexValue), totalPathCost(totalPathCostValue) {}
+                Edge(int fromVertexValue = -1, int toVertexValue = -1, int costValue = 0)
+                    : fromVertexIndex(fromVertexValue), toVertexIndex(toVertexValue), cost(costValue) {}
         };
 
         /*-------------------------------------------------------------------------------------*
          *   private data members                                                              *
          *-------------------------------------------------------------------------------------*/
         // representation of the graph using an adjacency list
-        std::vector< std::list<Edge> > adjacencyList;
+        std::vector< std::list<AdjListVertex> > adjacencyList;
 
         // stores the names of the vertices in the graph
         std::vector<std::string> vertexNameList;
@@ -154,7 +165,16 @@ class Graph{
 
         // builds the pathRepresentation vector
         void buildPathRepresentation(std::vector<PathVertex>& pathRepresentation,
-            std::priority_queue< QueueVertex, std::vector<QueueVertex>, std::greater<QueueVertex> >& nextShortestPathQueue);
+            std::priority_queue< Edge, std::vector<Edge>, std::greater<Edge> >& nextShortestPathQueue);
+
+        // adds the edges of the graph to edgesList. helper function for computeMinimumSpanningTree
+        void populateEdgesList(std::list<Edge>& edgesList);
+
+        // calculates the total cost of the minimum spanning tree
+        unsigned int calculateSpanningTreeTotalCost(std::list<Edge>& minSpanTreeEdges);
+
+        // prints the correct output for the computeMinimumSpanningTree function
+        void printMinimumSpanningTreeOutput(std::list<Edge>& minSpanTreeEdges, unsigned int minSpanTreeTotalCost);
 
     public:
         // constructor
@@ -180,6 +200,9 @@ class Graph{
         // prints out the path and cost to each vertex from vertexName
         void computeShortestPaths(std::string startingVertexName);
 
+        // computes the minimum spanning tree, then prints the edges and total weight of the tree
+        // precondition: graph must be connected
+        void computeMinimumSpanningTree();
 
 };
 

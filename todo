@@ -1,8 +1,5 @@
 todo:
-complete computeShortestPaths
-cleanup QueueVertex struct format
-cleanup computeShortestPaths by adding a couple of private member functions
-
+complete graphRunner.cpp
 
 
 /*-----------------------------------------------------------*
@@ -19,7 +16,8 @@ cleanup computeShortestPaths by adding a couple of private member functions
  readGraph
  printGraph
  computeTopologicalSort
+ computeShortestPaths
+ computeMinimumSpanningTree
 
 questions:
 could we create the in-degree vector during read graph by incrementing with each toVertexName
-how to make computeShortestPaths more readable

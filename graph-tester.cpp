@@ -61,6 +61,7 @@ int main() {
     graph.computeShortestPaths("C");
     std::cout << "\n\n" << std::endl;
     graph.computeTopologicalSort();
+    graph.computeMinimumSpanningTree();
 }
 
 

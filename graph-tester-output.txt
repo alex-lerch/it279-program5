@@ -10,3 +10,12 @@ C --> E --> H || Weight: 8
 
 Topological Sort:
 A --> C --> D --> E --> B --> G --> F --> H
+Minimum Spanning Tree:
+A -- D || weight: 2
+D -- B || weight: 2
+E -- H || weight: 2
+C -- D || weight: 3
+E -- G || weight: 3
+C -- E || weight: 6
+F -- H || weight: 8
+Total Cost: 26
