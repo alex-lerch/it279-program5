@@ -1,4 +1,4 @@
-//IT 279 F2020 - Nick Dunne and ______
+//IT 279 F2020 - Nick Dunne and Alex Lerch
 //Short program to handle the menu interface to the Graph class
 #include "Graph.h"
 #include "TextMenu.h"
@@ -78,22 +78,22 @@ void handleMenu(TextMenu &menu, Graph &graph)
             break;
         case 2:
             //Print out the graph that is in the file
-            // << your call here >>
+            graph.printGraph();
             break;
         case 3:
             //Call topological sort
-            // << your call here >>
+            graph.computeTopologicalSort();
             break;
         case 4:
             //Retrieve input from user to ask for a node
             node = promptShortestPathsNode();
 
             //Call shortest paths
-            // << your call here >>
+            graph.computeShortestPaths(node);
             break;
         case 5:
             //Call minimum spanning tree
-            // << your call here >>
+            graph.computeMinimumSpanningTree();
             break;
         }
         menuChoice = menu.getChoice();
@@ -107,7 +107,7 @@ void readFileIntoGraph(Graph &graph)
 
     //Attempt to read in the file
     bool fileReadSuccessfully;
-    // << your call here >>
+    fileReadSuccessfully = graph.readGraph(fileName);
 
     //If the read doesn't work, keep asking for a file until it does.
     while (!fileReadSuccessfully)
@@ -117,7 +117,7 @@ void readFileIntoGraph(Graph &graph)
         fileName = promptFileName();
 
         //Attempt to read the file in again
-        // << your call here >>
+        graph.readGraph(fileName);
     }
 }
 

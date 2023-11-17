@@ -274,11 +274,12 @@ void Graph::printTopologicalSortOutput(std::list<std::string>& topologicalSortOr
     // variables used
     int count = 0; // the count used to know when we are at the last vertex in the ordering
 
-    // print out the title
-    std::cout << "Topological Sort:\n";
-
     // if the graph can be sorted then print out the order
     if (numVertices == numVerticesInSortList) {
+
+        // print out the title
+        std::cout << "Topological Sort:\n";
+
         for (std::list<std::string>::iterator curVertex = topologicalSortOrdering.begin(); curVertex != topologicalSortOrdering.end(); ++curVertex) {
 
             // increase the count 
@@ -438,13 +439,15 @@ void Graph::printShortestPathsOutput(std::string startingVertexName, std::vector
             printPathList(path);
 
             // print weight of the path
-            std::cout << " || Weight: " << curVertex.totalDistance;
-            std::cout << std::endl;
+            std::cout << " || Weight: " << curVertex.totalDistance << "\n";
 
             // clear the path list
             path.clear();
 
 
+        }
+        else if (startingVertexIndex != curIndex) {
+            std::cout << "No path from " << startingVertexName << " to " << vertexNameList[curIndex] << " found.\n";
         }
 
         // update curIndex
@@ -663,9 +666,9 @@ void Graph::printMinimumSpanningTreeOutput(std::list<Edge>& minSpanTreeEdges, un
 
     /* go through the spanning tree and print out the edges and their cost */
     for (Edge curEdge : minSpanTreeEdges) {
-        std::cout << vertexNameList[curEdge.fromVertexIndex] << " -- " << vertexNameList[curEdge.toVertexIndex] << " || " << "weight: " << curEdge.cost << "\n";
+        std::cout << vertexNameList[curEdge.fromVertexIndex] << " -- " << vertexNameList[curEdge.toVertexIndex] << " || " << "Weight: " << curEdge.cost << "\n";
     }
 
     // print out the total cost of the minimum spanning tree
-    std::cout << "Total Cost: " << minSpanTreeTotalCost;
+    std::cout << "Total Cost: " << minSpanTreeTotalCost << "\n";
 }
