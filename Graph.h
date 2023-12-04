@@ -19,6 +19,8 @@
 #include<string>
 #include<queue>
 #include "DisjointSet.h"
+#include<tuple>
+#include<climits>
 
 /*-------------------------------------------------------------------------------------*
  *   class: Graph                                                                      *

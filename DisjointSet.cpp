@@ -96,9 +96,7 @@ bool DisjointSet::doUnion(int objIndex1, int objIndex2)
         }
         
         // check for complete set union
-        if ( (theArray[root1] == (numValues * -1) ) || (theArray[root2] == (numValues * -1) ) ) {
-            return true;
-        }
+        return ( (theArray[root1] == (numValues * -1) ) || (theArray[root2] == (numValues * -1) ) );
     }
 
     // the set has not been completely unioned so return false

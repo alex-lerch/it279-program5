@@ -573,9 +573,7 @@ void Graph::computeMinimumSpanningTree() {
             minSpanTreeEdges.push_back(curEdge);
 
             // connect the two trees and check if the spanning tree is complete
-            if (vertexDisjSet.doUnion(curEdge.fromVertexIndex, curEdge.toVertexIndex)) {
-                spanningTreeComplete = true;
-            }
+            spanningTreeComplete = (vertexDisjSet.doUnion(curEdge.fromVertexIndex, curEdge.toVertexIndex));
 
         }
     }

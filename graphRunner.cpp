@@ -117,7 +117,7 @@ void readFileIntoGraph(Graph &graph)
         fileName = promptFileName();
 
         //Attempt to read the file in again
-        graph.readGraph(fileName);
+        fileReadSuccessfully = graph.readGraph(fileName);
     }
 }
 
